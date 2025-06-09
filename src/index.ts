@@ -39,6 +39,234 @@ const swaggerOptions = {
         url: `http://localhost:${port}`,
       },
     ],
+    components: {
+      schemas: {
+        User: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            name: { type: 'string' },
+            email: { type: 'string' },
+            password: { type: 'string' },
+            role_id: { type: 'string' },
+            status: { type: 'string', enum: ['active', 'inactive'] },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        Role: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            name: { type: 'string' },
+            description: { type: 'string' },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        Client: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            name: { type: 'string' },
+            email: { type: 'string' },
+            phone: { type: 'string' },
+            document_type: { type: 'string', enum: ['dni', 'ruc', 'ce', 'passport'] },
+            document_number: { type: 'string' },
+            address: { type: 'string' },
+            real_estate_id: { type: 'string' },
+            agent_id: { type: 'string' },
+            status: { type: 'string', enum: ['active', 'inactive'] },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        ClientCreate: {
+          type: 'object',
+          required: ['name', 'email', 'phone', 'document_type', 'document_number', 'real_estate_id', 'agent_id'],
+          properties: {
+            name: { type: 'string' },
+            email: { type: 'string' },
+            phone: { type: 'string' },
+            document_type: { type: 'string', enum: ['dni', 'ruc', 'ce', 'passport'] },
+            document_number: { type: 'string' },
+            address: { type: 'string' },
+            real_estate_id: { type: 'string' },
+            agent_id: { type: 'string' },
+            status: { type: 'string', enum: ['active', 'inactive'] }
+          }
+        },
+        ClientWithDetails: {
+          type: 'object',
+          allOf: [
+            { $ref: '#/components/schemas/Client' },
+            {
+              properties: {
+                real_estate: { $ref: '#/components/schemas/RealEstate' },
+                agent: { $ref: '#/components/schemas/User' }
+              }
+            }
+          ]
+        },
+        RealEstate: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            name: { type: 'string' },
+            address: { type: 'string' },
+            contact_email: { type: 'string' },
+            phone: { type: 'string' },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        Property: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            title: { type: 'string' },
+            description: { type: 'string' },
+            price: { type: 'number' },
+            address: { type: 'string' },
+            type: { type: 'string', enum: ['house', 'apartment', 'land', 'commercial'] },
+            status: { type: 'string', enum: ['available', 'sold', 'reserved'] },
+            real_estate_id: { type: 'string' },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        PropertyCreate: {
+          type: 'object',
+          required: ['title', 'price', 'type', 'real_estate_id'],
+          properties: {
+            title: { type: 'string' },
+            description: { type: 'string' },
+            price: { type: 'number' },
+            address: { type: 'string' },
+            type: { type: 'string', enum: ['house', 'apartment', 'land', 'commercial'] },
+            status: { type: 'string', enum: ['available', 'sold', 'reserved'] },
+            real_estate_id: { type: 'string' }
+          }
+        },
+        PropertyWithDetails: {
+          type: 'object',
+          allOf: [
+            { $ref: '#/components/schemas/Property' },
+            {
+              properties: {
+                real_estate: { $ref: '#/components/schemas/RealEstate' }
+              }
+            }
+          ]
+        },
+        Project: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            name: { type: 'string' },
+            description: { type: 'string' },
+            status: { type: 'string', enum: ['active', 'completed', 'cancelled'] },
+            real_estate_id: { type: 'string' },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        ProjectCreate: {
+          type: 'object',
+          required: ['name', 'real_estate_id'],
+          properties: {
+            name: { type: 'string' },
+            description: { type: 'string' },
+            status: { type: 'string', enum: ['active', 'completed', 'cancelled'] },
+            real_estate_id: { type: 'string' }
+          }
+        },
+        ProjectWithDetails: {
+          type: 'object',
+          allOf: [
+            { $ref: '#/components/schemas/Project' },
+            {
+              properties: {
+                real_estate: { $ref: '#/components/schemas/RealEstate' }
+              }
+            }
+          ]
+        },
+        PropertyView: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            property_id: { type: 'string' },
+            client_id: { type: 'string' },
+            agent_id: { type: 'string' },
+            view_date: { type: 'string', format: 'date-time' },
+            status: { type: 'string', enum: ['scheduled', 'completed', 'cancelled'] },
+            notes: { type: 'string' },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        PropertyViewCreate: {
+          type: 'object',
+          required: ['property_id', 'client_id', 'agent_id', 'view_date'],
+          properties: {
+            property_id: { type: 'string' },
+            client_id: { type: 'string' },
+            agent_id: { type: 'string' },
+            view_date: { type: 'string', format: 'date-time' },
+            status: { type: 'string', enum: ['scheduled', 'completed', 'cancelled'] },
+            notes: { type: 'string' }
+          }
+        },
+        PropertyViewWithDetails: {
+          type: 'object',
+          allOf: [
+            { $ref: '#/components/schemas/PropertyView' },
+            {
+              properties: {
+                property: { $ref: '#/components/schemas/Property' },
+                client: { $ref: '#/components/schemas/Client' },
+                agent: { $ref: '#/components/schemas/User' }
+              }
+            }
+          ]
+        },
+        ClientInteraction: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            client_id: { type: 'string' },
+            agent_id: { type: 'string' },
+            type: { type: 'string', enum: ['call', 'email', 'meeting', 'whatsapp'] },
+            description: { type: 'string' },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        ClientInteractionCreate: {
+          type: 'object',
+          required: ['client_id', 'agent_id', 'type', 'description'],
+          properties: {
+            client_id: { type: 'string' },
+            agent_id: { type: 'string' },
+            type: { type: 'string', enum: ['call', 'email', 'meeting', 'whatsapp'] },
+            description: { type: 'string' }
+          }
+        },
+        ClientInteractionWithDetails: {
+          type: 'object',
+          allOf: [
+            { $ref: '#/components/schemas/ClientInteraction' },
+            {
+              properties: {
+                client: { $ref: '#/components/schemas/Client' },
+                agent: { $ref: '#/components/schemas/User' }
+              }
+            }
+          ]
+        }
+      }
+    }
   },
   apis: ['./src/routes/*.ts'],
 };
